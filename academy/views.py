@@ -1,6 +1,6 @@
+from academy.models import Group, Lecturer, Student
+
 from django.shortcuts import render
-from django.http import HttpResponse
-from academy.models import Student, Lecturer, Group
 
 
 def get_index(request):
