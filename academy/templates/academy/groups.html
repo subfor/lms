@@ -4,46 +4,35 @@
     {% include 'academy/menu.html' %}
     <h1>Groups:</h1>
     <div class="container">
-        <div class="row">
-            <div class="col-md">
-                One of three columns
-            </div>
-            <div class="col-md-6">
-                <div id="accordion">
-                    {% for group in groups %}
-                        <div class="card">
-                            <div class="card-header" id="heading{{ group.group }}">
-                                <h5 class="mb-0">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ group.group }}"
-                                            aria-expanded="true" aria-controls="collapse{{ group.group }}">
-                                        {{ group.group_name }}
-                                    </button>
-                                </h5>
-                            </div>
-                            <div id="collapse{{ group.group }}" class="collapse clear" aria-labelledby="heading{{ group.group }}"
-                                 data-parent="#accordion">
-                                <div class="card-body">
-                                    <p><b>Course: {{ group.course }} </b></p>
+            <div id="accordion">
+                {% for group in groups %}
+                    <div class="card">
+                        <div class="card-header" id="heading{{ group.group }}">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ group.group }}"
+                                        aria-expanded="true" aria-controls="collapse{{ group.group }}">
+                                    {{ group.group_name }}
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapse{{ group.group }}" class="collapse clear" aria-labelledby="heading{{ group.group }}"
+                             data-parent="#accordion">
+                            <div class="card-body">
+                                <p><b>Course: {{ group.course }} </b></p>
 
-                                    <p><b>Lecturer: </b></p>
-                                    {% for teacher in group.teachers.all %}
-                                        <p>{{ teacher.first_name}} {{ teacher.last_name}}, {{ teacher.email }}</p>
-                                    {% endfor %}
-                                    <p><b>Students: </b></p>
-                                    {% for student in group.students.all %}
-                                        <p>{{ student.first_name }} {{ student.last_name }} {{ student.email }}</p>
-                                    {% endfor %}
+                                <p><b>Lecturer: </b></p>
+                                {% for teacher in group.teachers.all %}
+                                    <p>{{ teacher.first_name}} {{ teacher.last_name}}, {{ teacher.email }}</p>
+                                {% endfor %}
+                                <p><b>Students: </b></p>
+                                {% for student in group.students.all %}
+                                    <p>{{ student.first_name }} {{ student.last_name }} {{ student.email }}</p>
+                                {% endfor %}
 
-                                </div>
                             </div>
                         </div>
-                    {% endfor %}
-                </div>
-
+                    </div>
+                {% endfor %}
             </div>
-            <div class="col-md">
-                One of three columns
-            </div>
-        </div>
     </div>
 {% endblock %}
