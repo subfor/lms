@@ -30,7 +30,6 @@ def add_student(request):
         add_student_form = AddStudentForm(data=request.POST)
         if add_student_form.is_valid():
             student = add_student_form.save()
-            # student.save()
             message = f"Student {student.first_name} {student.last_name} successfully added to LMS"
     context = {
         'student': student,
@@ -48,7 +47,6 @@ def add_lecturer(request):
         add_lecturer_form = AddLecturerForm(data=request.POST)
         if add_lecturer_form.is_valid():
             lecturer = add_lecturer_form.save()
-            # student.save()
             message = f"Lecturer {lecturer.first_name} {lecturer.last_name} successfully added to LMS"
     context = {
         'lecturer': lecturer,
