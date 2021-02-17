@@ -1,0 +1,55 @@
+{% extends './base.html' %}
+
+{% block content %}
+    {% include 'academy/menu.html' %}
+    <h1>Students:</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-10">
+
+            </div>
+            <div class="col">
+                <a href="students/add">
+                <button class="btn btn-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="green" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
+                    <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                    <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+                </button>
+                </a>
+            </div>
+            <div class="col">
+
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">First name</th>
+                <th scope="col">Last name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for student in students %}
+                <a>
+                    <td>{{ student.first_name }}</td>
+                    <td>{{ student.last_name}}</td>
+                    <td>{{ student.email }}</td>
+                    <td>
+                        <a href="students/delete/{{ student.student }}">
+                        <button type="button" class="btn btn-danger">Delete</button>
+                        </a>
+                        <a href="students/edit/{{ student.student }}">
+                        <button type="button" class="btn btn-success">Edit</button>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

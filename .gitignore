@@ -34,10 +34,12 @@ MANIFEST
 *.spec
 
 # Installer logs
+fk.py
 pip-log.txt
 pip-delete-this-directory.txt
-
+history.txt
 # Unit test / coverage reports
+.idea
 htmlcov/
 .tox/
 .nox/
@@ -50,7 +52,7 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
-
+history.txt
 # Translations
 *.mo
 *.pot
@@ -60,7 +62,7 @@ coverage.xml
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-
+*.db
 # Flask stuff:
 instance/
 .webassets-cache
@@ -102,6 +104,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+.idea
 .env
 .venv
 env/
