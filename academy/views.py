@@ -1,7 +1,7 @@
 from academy.forms import AddGroupForm, AddLecturerForm, AddStudentForm
 from academy.models import Group, Lecturer, Student
 
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 
 
 def get_index(request):
@@ -24,6 +24,7 @@ def get_groups(request):
 
 
 def add_student(request):
+    action_name = "Add student"
     student = None
     message = ""
     if request.method == 'POST':
@@ -34,13 +35,36 @@ def add_student(request):
     context = {
         'student': student,
         'add_student_form': AddStudentForm(),
-        'message': message
+        'message': message,
+        'action_name': action_name
     }
 
     return render(request, 'academy/add_student.html', context)
 
 
+def del_student(request, student_id: int):
+    student = get_object_or_404(Student, student=student_id)
+    student.delete()
+    return redirect('students')
+
+
+def edit_student(request, student_id: int):
+    action_name = "Edit student"
+    student = get_object_or_404(Student, student=student_id)
+    if request.method == 'POST':
+        add_student_form = AddStudentForm(request.POST, instance=student)
+        if add_student_form.is_valid():
+            student = add_student_form.save()
+            student.save()
+            return redirect('students')
+    add_student_form = AddStudentForm(instance=student)
+    return render(request, 'academy/add_student.html', {'add_student_form': add_student_form,
+                                                        'action_name': action_name
+                                                        })
+
+
 def add_lecturer(request):
+    action_name = "Add lecturer"
     lecturer = None
     message = ""
     if request.method == 'POST':
@@ -51,13 +75,36 @@ def add_lecturer(request):
     context = {
         'lecturer': lecturer,
         'add_lecturer_form': AddStudentForm(),
-        'message': message
+        'message': message,
+        'action_name': action_name
     }
 
     return render(request, 'academy/add_lecturer.html', context)
 
 
+def del_lecturer(request, lecturer_id: int):
+    lecturer = get_object_or_404(Lecturer, teacher_id=lecturer_id)
+    lecturer.delete()
+    return redirect('lecturers')
+
+
+def edit_lecturer(request, lecturer_id: int):
+    action_name = "Edit lecturer"
+    lecturer = get_object_or_404(Lecturer, teacher_id=lecturer_id)
+    if request.method == 'POST':
+        add_lecturer_form = AddLecturerForm(request.POST, instance=lecturer)
+        if add_lecturer_form.is_valid():
+            lecturer = add_lecturer_form.save()
+            lecturer.save()
+            return redirect('lecturers')
+    add_lecturer_form = AddLecturerForm(instance=lecturer)
+    return render(request, 'academy/add_lecturer.html', {'add_lecturer_form': add_lecturer_form,
+                                                         'action_name': action_name
+                                                         })
+
+
 def add_group(request):
+    action_name = "Add group"
     group = None
     message = ""
     if request.method == 'POST':
@@ -69,7 +116,29 @@ def add_group(request):
     context = {
         'group': group,
         'add_group_form': AddGroupForm(),
-        'message': message
+        'message': message,
+        'action_name': action_name
     }
 
     return render(request, 'academy/add_group.html', context)
+
+
+def del_group(request, group_id: int):
+    group = get_object_or_404(Group, group=group_id)
+    group.delete()
+    return redirect('groups')
+
+
+def edit_group(request, group_id: int):
+    action_name = "Edit group"
+    group = get_object_or_404(Group, group=group_id)
+    if request.method == 'POST':
+        add_group_form = AddGroupForm(request.POST, instance=group)
+        if add_group_form.is_valid():
+            group = add_group_form.save()
+            group.save()
+            return redirect('groups')
+    add_group_form = AddGroupForm(instance=group)
+    return render(request, 'academy/add_group.html', {'add_group_form': add_group_form,
+                                                      'action_name': action_name
+                                                      })
