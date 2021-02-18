@@ -31,7 +31,7 @@ def add_student(request):
         add_student_form = AddStudentForm(data=request.POST)
         if add_student_form.is_valid():
             student = add_student_form.save()
-            # bez etogo signal ne rabotaet
+            # bez etogo signal ne rabotaet i s etim commit=False spisok ne pashet
             student.save()
             message = f"Student {student.first_name} {student.last_name} successfully added to LMS"
     context = {

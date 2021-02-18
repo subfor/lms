@@ -7,4 +7,4 @@ class LogRecord(models.Model):
     execution_time_sec = models.FloatField()
 
     def __str__(self):
-        return f"{self.path}  {self.method}"
+        return f"{self.path}  {self.method} {self.execution_time_sec}"
