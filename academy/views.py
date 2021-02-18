@@ -31,6 +31,8 @@ def add_student(request):
         add_student_form = AddStudentForm(data=request.POST)
         if add_student_form.is_valid():
             student = add_student_form.save()
+            # bez etogo signal ne rabotaet
+            student.save()
             message = f"Student {student.first_name} {student.last_name} successfully added to LMS"
     context = {
         'student': student,
@@ -54,6 +56,7 @@ def edit_student(request, student_id: int):
     if request.method == 'POST':
         add_student_form = AddStudentForm(request.POST, instance=student)
         if add_student_form.is_valid():
+            # vopros sprosit'
             student = add_student_form.save()
             student.save()
             return redirect('students')
@@ -71,6 +74,7 @@ def add_lecturer(request):
         add_lecturer_form = AddLecturerForm(data=request.POST)
         if add_lecturer_form.is_valid():
             lecturer = add_lecturer_form.save()
+            lecturer.save()
             message = f"Lecturer {lecturer.first_name} {lecturer.last_name} successfully added to LMS"
     context = {
         'lecturer': lecturer,
@@ -111,6 +115,7 @@ def add_group(request):
         add_group_form = AddGroupForm(data=request.POST)
         if add_group_form.is_valid():
             group = add_group_form.save()
+            group.save()
             message = f"Group {group.group_name} successfully added to LMS"
 
     context = {
