@@ -124,7 +124,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static_in_env")
 STATIC_URL = '/static/'
 CELERY_BROKER_URL = 'amqp://localhost'
 
-# TIME_ZONE = 'UTC'
-# USE_TZ = True
+
 CELERY_ENABLE_UTC = True
 CELERY_TIMEZONE = 'Europe/Kiev'
