@@ -1,5 +1,6 @@
-from academy.forms import AddGroupForm, AddLecturerForm, AddStudentForm
+from academy.forms import AddGroupForm, AddLecturerForm, AddStudentForm, ContactForm
 from academy.models import Group, Lecturer, Student
+from academy.tasks import send_mail
 
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -78,7 +79,7 @@ def add_lecturer(request):
             message = f"Lecturer {lecturer.first_name} {lecturer.last_name} successfully added to LMS"
     context = {
         'lecturer': lecturer,
-        'add_lecturer_form': AddStudentForm(),
+        'add_lecturer_form': AddLecturerForm(),
         'message': message,
         'action_name': action_name
     }
@@ -147,3 +148,21 @@ def edit_group(request, group_id: int):
     return render(request, 'academy/add_group.html', {'add_group_form': add_group_form,
                                                       'action_name': action_name
                                                       })
+
+
+def send_contact(request):
+    message = ""
+    if request.method == 'POST':
+        contact_form = ContactForm(data=request.POST)
+        if contact_form.is_valid():
+            message = "Message sent"
+            send_mail.delay(contact_form.cleaned_data)
+            contact_form = ContactForm()
+            return render(request, 'academy/contact.html', {'contact_form': contact_form,
+                                                            'message': message
+                                                            })
+        else:
+            return render(request, 'academy/contact.html', {'contact_form': contact_form})
+    else:
+        contact_form = ContactForm()
+    return render(request, 'academy/contact.html', {'contact_form': contact_form})

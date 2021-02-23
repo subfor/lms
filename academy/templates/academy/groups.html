@@ -31,9 +31,9 @@
                 <div id="accordion">
                     {% for group in groups %}
                         <div class="card">
-                            <div class="card-header" id="heading{{ group.group }}">
+                            <div class="card-header-sm text-center" style="background-color: ghostwhite;" id="heading{{ group.group }}">
                                 <h5 class="mb-0">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ group.group }}"
+                                    <button class="btn btn-link " style="color: black;" data-toggle="collapse" data-target="#collapse{{ group.group }}"
                                             aria-expanded="true" aria-controls="collapse{{ group.group }}">
                                         {{ group.group_name }}
                                     </button>
