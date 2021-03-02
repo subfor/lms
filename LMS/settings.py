@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'academy.apps.AcademyConfig',
     # 'logger.apps.LoggerConfig',
     'logger',
-    'silk'
+    'silk',
+    'exchanger',
+    'bulk_update_or_create'
 ]
 
 MIDDLEWARE = [

@@ -4,8 +4,13 @@ from academy.tasks import send_mail
 
 from django.shortcuts import get_object_or_404, redirect, render
 
+from exchanger.models import ExchangeRate
+
 
 def get_index(request):
+    rates = ExchangeRate.objects.all()
+    if rates.exists():
+        return render(request, 'academy/start.html', {'rates': rates.values()})
     return render(request, 'academy/start.html')
 
 

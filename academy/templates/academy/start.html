@@ -1,6 +1,62 @@
 {% extends './base.html' %}
 
 {% block content %}
-    <h1>LMS</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+            </div>
+            <div class="col-4">
+                <h1>LMS</h1>
+            </div>
+            <div class="col-5">
+                   <div class="container">
+                        <div class="row">
+                            <table class="table table-borderless table-info">
+                                  <tbody>
+                                  {% for rate in rates %}
+                                    <tr>
+                                      <td>{{rate.currency}}</td>
+                                      <td>
+                                          {{rate.buy}}
+                                        {% if rate.buy_status == 0 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                                              <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+                                            </svg>
+                                          {% elif rate.buy_status == 1 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                                              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+                                            </svg>
+                                          {% elif rate.buy_status == 2 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-arrow-down" viewBox="0 0 16 16">
+                                              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
+                                            </svg>
+                                          {% endif %}
+                                      </td>
+                                      <td>
+                                          {{rate.sell}}
+                                          {% if rate.sell_status == 0 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                                              <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+                                            </svg>
+                                          {% elif rate.sell_status == 1 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                                              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+                                            </svg>
+                                          {% elif rate.sell_status == 2 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-arrow-down" viewBox="0 0 16 16">
+                                              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
+                                            </svg>
+                                          {% endif %}
+                                      </td>
+                                    </tr>
+                                  {% endfor %}
+                                  </tbody>
+                            </table>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
     {% include 'academy/menu.html' %}
+
 {% endblock %}
