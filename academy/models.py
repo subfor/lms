@@ -1,8 +1,6 @@
 from django.db import models
 
 
-# from django.utils import timezone
-
 class Student(models.Model):
     student = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=30, verbose_name='Name')

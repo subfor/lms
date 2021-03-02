@@ -1,10 +1,16 @@
-from academy.forms import AddGroupForm, AddLecturerForm, AddStudentForm
+from academy.forms import AddGroupForm, AddLecturerForm, AddStudentForm, ContactForm
 from academy.models import Group, Lecturer, Student
+from academy.tasks import send_mail
 
 from django.shortcuts import get_object_or_404, redirect, render
 
+from exchanger.models import ExchangeRate
+
 
 def get_index(request):
+    rates = ExchangeRate.objects.all()
+    if rates.exists():
+        return render(request, 'academy/start.html', {'rates': rates.values()})
     return render(request, 'academy/start.html')
 
 
@@ -31,6 +37,8 @@ def add_student(request):
         add_student_form = AddStudentForm(data=request.POST)
         if add_student_form.is_valid():
             student = add_student_form.save()
+            # bez etogo signal ne rabotaet i s etim commit=False spisok ne pashet
+            student.save()
             message = f"Student {student.first_name} {student.last_name} successfully added to LMS"
     context = {
         'student': student,
@@ -54,6 +62,7 @@ def edit_student(request, student_id: int):
     if request.method == 'POST':
         add_student_form = AddStudentForm(request.POST, instance=student)
         if add_student_form.is_valid():
+            # vopros sprosit'
             student = add_student_form.save()
             student.save()
             return redirect('students')
@@ -71,10 +80,11 @@ def add_lecturer(request):
         add_lecturer_form = AddLecturerForm(data=request.POST)
         if add_lecturer_form.is_valid():
             lecturer = add_lecturer_form.save()
+            lecturer.save()
             message = f"Lecturer {lecturer.first_name} {lecturer.last_name} successfully added to LMS"
     context = {
         'lecturer': lecturer,
-        'add_lecturer_form': AddStudentForm(),
+        'add_lecturer_form': AddLecturerForm(),
         'message': message,
         'action_name': action_name
     }
@@ -111,6 +121,7 @@ def add_group(request):
         add_group_form = AddGroupForm(data=request.POST)
         if add_group_form.is_valid():
             group = add_group_form.save()
+            group.save()
             message = f"Group {group.group_name} successfully added to LMS"
 
     context = {
@@ -142,3 +153,21 @@ def edit_group(request, group_id: int):
     return render(request, 'academy/add_group.html', {'add_group_form': add_group_form,
                                                       'action_name': action_name
                                                       })
+
+
+def send_contact(request):
+    message = ""
+    if request.method == 'POST':
+        contact_form = ContactForm(data=request.POST)
+        if contact_form.is_valid():
+            message = "Message sent"
+            send_mail.delay(contact_form.cleaned_data)
+            contact_form = ContactForm()
+            return render(request, 'academy/contact.html', {'contact_form': contact_form,
+                                                            'message': message
+                                                            })
+        else:
+            return render(request, 'academy/contact.html', {'contact_form': contact_form})
+    else:
+        contact_form = ContactForm()
+    return render(request, 'academy/contact.html', {'contact_form': contact_form})
