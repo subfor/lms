@@ -28,6 +28,7 @@
         <table class="table">
             <thead>
             <tr>
+                <th scope="col"></th>
                 <th scope="col">First name</th>
                 <th scope="col">Last name</th>
                 <th scope="col">Email</th>
@@ -37,6 +38,11 @@
             <tbody>
             {% for lecturer in lecturers %}
                 <tr>
+                    <td>
+                        <div class="text-center">
+                          <img src="{{ lecturer.photo.url }}" class="rounded" alt="Photo" width="40" height="40">
+                        </div>
+                    </td>
                     <td>{{ lecturer.first_name }}</td>
                     <td>{{ lecturer.last_name}}</td>
                     <td>{{ lecturer.email }}</td>
