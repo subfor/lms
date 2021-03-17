@@ -39,9 +39,29 @@
             {% for lecturer in lecturers %}
                 <tr>
                     <td>
-                        <div class="text-center">
+<!--                        <div class="text-center">-->
+<!--                          <img src="{{ lecturer.photo.url }}" class="rounded" alt="Photo" width="40" height="40">-->
+<!--                        </div>-->
+                        <button type="button" class="btn btn-link shadow-none" data-toggle="modal" data-target="#staticBackdrop{{ lecturer.teacher_id }}" >
                           <img src="{{ lecturer.photo.url }}" class="rounded" alt="Photo" width="40" height="40">
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="staticBackdrop{{ lecturer.teacher_id }}" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <img src="{{ lecturer.photo.url }}" class="rounded" alt="Photo" width="400" height="400">
+                              </div>
+                            </div>
+                          </div>
                         </div>
+
                     </td>
                     <td>{{ lecturer.first_name }}</td>
                     <td>{{ lecturer.last_name}}</td>
