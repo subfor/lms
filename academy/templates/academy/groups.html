@@ -1,5 +1,5 @@
 {% extends './base.html' %}
-
+{% load students_extras %}
 {% block content %}
     {% include 'academy/menu.html' %}
     <h1>Groups:</h1>
@@ -35,7 +35,7 @@
                                 <h5 class="mb-0">
                                     <button class="btn btn-link " style="color: black;" data-toggle="collapse" data-target="#collapse{{ group.group }}"
                                             aria-expanded="true" aria-controls="collapse{{ group.group }}">
-                                        {{ group.group_name }}
+                                        {{ group.group_name|get_count_students }}
                                     </button>
                                 </h5>
                             </div>

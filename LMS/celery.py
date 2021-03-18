@@ -21,13 +21,18 @@ app.conf.beat_schedule = {
         'schedule': crontab(minute=0, hour=0),
         'args': (),
     },
-}
-
-app.conf.beat_schedule = {
     'run_every_30_min': {
         'task': 'exchanger.tasks.write_currency',
         'schedule': crontab(minute='*/30'),
         'args': (),
     },
 }
+
+# app.conf.beat_schedule = {
+#     'run_every_30_min': {
+#         'task': 'exchanger.tasks.write_currency',
+#         'schedule': crontab(minute='*/30'),
+#         'args': (),
+#     },
+# }
 app.autodiscover_tasks()
