@@ -1,5 +1,7 @@
 {% load static %}
+{% load cache %}
 <html lang="en">
+{% cache 300 menu %}
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -11,7 +13,11 @@
     <title>LMS</title>
 
 </head>
+{% endcache %}
 <body>
+
+{% include 'academy/menu.html' %}
+
     {% block content %}
     {% endblock %}
 </body>

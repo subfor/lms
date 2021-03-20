@@ -3,6 +3,8 @@ from academy.models import Group, Lecturer, Student
 from academy.tasks import send_mail
 
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.cache import cache_page
+
 
 from exchanger.models import ExchangeRate
 
@@ -56,6 +58,7 @@ def del_student(request, student_id: int):
     return redirect('students')
 
 
+@cache_page(60 * 5)
 def edit_student(request, student_id: int):
     action_name = "Edit student"
     student = get_object_or_404(Student, student=student_id)
@@ -98,6 +101,7 @@ def del_lecturer(request, lecturer_id: int):
     return redirect('lecturers')
 
 
+@cache_page(60 * 5)
 def edit_lecturer(request, lecturer_id: int):
     action_name = "Edit lecturer"
     lecturer = get_object_or_404(Lecturer, teacher_id=lecturer_id)
@@ -140,6 +144,7 @@ def del_group(request, group_id: int):
     return redirect('groups')
 
 
+@cache_page(60 * 5)
 def edit_group(request, group_id: int):
     action_name = "Edit group"
     group = get_object_or_404(Group, group=group_id)

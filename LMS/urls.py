@@ -22,6 +22,7 @@ from django.urls import path
 
 
 urlpatterns = [
+    path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
     path('', include('academy.urls')),
     url(r'^silk/', include('silk.urls', namespace='silk'))
