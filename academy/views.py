@@ -2,7 +2,7 @@ from academy.forms import AddGroupForm, AddLecturerForm, AddStudentForm, Contact
 from academy.models import Group, Lecturer, Student
 from academy.tasks import send_mail
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.cache import cache_page
 
@@ -31,7 +31,7 @@ def get_groups(request):
     return render(request, 'academy/groups.html', {'groups': groups})
 
 
-@login_required
+@user_passes_test(lambda user: user.is_staff)
 def add_student(request):
     action_name = "Add student"
     student = None
@@ -53,14 +53,14 @@ def add_student(request):
     return render(request, 'academy/add_student.html', context)
 
 
-@login_required
+@user_passes_test(lambda user: user.is_staff)
 def del_student(request, student_id: int):
     student = get_object_or_404(Student, student=student_id)
     student.delete()
     return redirect('students')
 
 
-@login_required
+@user_passes_test(lambda user: user.is_staff)
 @cache_page(60 * 5)
 def edit_student(request, student_id: int):
     action_name = "Edit student"
@@ -78,7 +78,7 @@ def edit_student(request, student_id: int):
                                                         })
 
 
-@login_required
+@user_passes_test(lambda user: user.is_staff)
 def add_lecturer(request):
     action_name = "Add lecturer"
     lecturer = None
@@ -99,14 +99,14 @@ def add_lecturer(request):
     return render(request, 'academy/add_lecturer.html', context)
 
 
-@login_required
+@user_passes_test(lambda user: user.is_staff)
 def del_lecturer(request, lecturer_id: int):
     lecturer = get_object_or_404(Lecturer, teacher_id=lecturer_id)
     lecturer.delete()
     return redirect('lecturers')
 
 
-@login_required
+@user_passes_test(lambda user: user.is_staff)
 @cache_page(60 * 5)
 def edit_lecturer(request, lecturer_id: int):
     action_name = "Edit lecturer"
@@ -123,7 +123,7 @@ def edit_lecturer(request, lecturer_id: int):
                                                          })
 
 
-@login_required
+@user_passes_test(lambda user: user.is_staff)
 def add_group(request):
     action_name = "Add group"
     group = None
@@ -145,13 +145,14 @@ def add_group(request):
     return render(request, 'academy/add_group.html', context)
 
 
-@login_required
+@user_passes_test(lambda user: user.is_staff)
 def del_group(request, group_id: int):
     group = get_object_or_404(Group, group=group_id)
     group.delete()
     return redirect('groups')
 
 
+@user_passes_test(lambda user: user.is_staff)
 @cache_page(60 * 5)
 def edit_group(request, group_id: int):
     action_name = "Edit group"
