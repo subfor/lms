@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from academy.forms import AddGroupForm, AddLecturerForm, AddStudentForm, ContactForm
 from academy.models import Group, Lecturer, Student
 from academy.tasks import send_mail
@@ -174,9 +176,18 @@ def send_contact(request):
     if request.method == 'POST':
         contact_form = ContactForm(data=request.POST)
         if contact_form.is_valid():
-            message = "Message sent"
-            send_mail.delay(contact_form.cleaned_data)
-            contact_form = ContactForm()
+            sent = request.session.get('sent')
+            if sent:
+                message = f"We are get your message, please try again after{request.session.get_expiry_age()} seconds"
+                contact_form = ContactForm()
+            else:
+                request.session.set_expiry(timedelta(seconds=180))
+                message = "Message sent"
+                send_mail.delay(contact_form.cleaned_data)
+                contact_form = ContactForm()
+                request.session['sent'] = True
+                request.session.modified = True
+
             return render(request, 'academy/contact.html', {'contact_form': contact_form,
                                                             'message': message
                                                             })
