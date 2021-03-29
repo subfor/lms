@@ -1,8 +1,12 @@
+from datetime import timedelta
+
 from academy.forms import AddGroupForm, AddLecturerForm, AddStudentForm, ContactForm
 from academy.models import Group, Lecturer, Student
 from academy.tasks import send_mail
 
+from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.cache import cache_page
 
 from exchanger.models import ExchangeRate
 
@@ -29,6 +33,7 @@ def get_groups(request):
     return render(request, 'academy/groups.html', {'groups': groups})
 
 
+@user_passes_test(lambda user: user.is_staff)
 def add_student(request):
     action_name = "Add student"
     student = None
@@ -50,12 +55,15 @@ def add_student(request):
     return render(request, 'academy/add_student.html', context)
 
 
+@user_passes_test(lambda user: user.is_staff)
 def del_student(request, student_id: int):
     student = get_object_or_404(Student, student=student_id)
     student.delete()
     return redirect('students')
 
 
+@user_passes_test(lambda user: user.is_staff)
+@cache_page(60 * 5)
 def edit_student(request, student_id: int):
     action_name = "Edit student"
     student = get_object_or_404(Student, student=student_id)
@@ -72,6 +80,7 @@ def edit_student(request, student_id: int):
                                                         })
 
 
+@user_passes_test(lambda user: user.is_staff)
 def add_lecturer(request):
     action_name = "Add lecturer"
     lecturer = None
@@ -92,12 +101,15 @@ def add_lecturer(request):
     return render(request, 'academy/add_lecturer.html', context)
 
 
+@user_passes_test(lambda user: user.is_staff)
 def del_lecturer(request, lecturer_id: int):
     lecturer = get_object_or_404(Lecturer, teacher_id=lecturer_id)
     lecturer.delete()
     return redirect('lecturers')
 
 
+@user_passes_test(lambda user: user.is_staff)
+@cache_page(60 * 5)
 def edit_lecturer(request, lecturer_id: int):
     action_name = "Edit lecturer"
     lecturer = get_object_or_404(Lecturer, teacher_id=lecturer_id)
@@ -113,6 +125,7 @@ def edit_lecturer(request, lecturer_id: int):
                                                          })
 
 
+@user_passes_test(lambda user: user.is_staff)
 def add_group(request):
     action_name = "Add group"
     group = None
@@ -134,12 +147,15 @@ def add_group(request):
     return render(request, 'academy/add_group.html', context)
 
 
+@user_passes_test(lambda user: user.is_staff)
 def del_group(request, group_id: int):
     group = get_object_or_404(Group, group=group_id)
     group.delete()
     return redirect('groups')
 
 
+@user_passes_test(lambda user: user.is_staff)
+@cache_page(60 * 5)
 def edit_group(request, group_id: int):
     action_name = "Edit group"
     group = get_object_or_404(Group, group=group_id)
@@ -160,9 +176,18 @@ def send_contact(request):
     if request.method == 'POST':
         contact_form = ContactForm(data=request.POST)
         if contact_form.is_valid():
-            message = "Message sent"
-            send_mail.delay(contact_form.cleaned_data)
-            contact_form = ContactForm()
+            sent = request.session.get('sent')
+            if sent:
+                message = f"We are get your message, please try again after{request.session.get_expiry_age()} seconds"
+                contact_form = ContactForm()
+            else:
+                request.session.set_expiry(timedelta(seconds=180))
+                message = "Message sent"
+                send_mail.delay(contact_form.cleaned_data)
+                contact_form = ContactForm()
+                request.session['sent'] = True
+                request.session.modified = True
+
             return render(request, 'academy/contact.html', {'contact_form': contact_form,
                                                             'message': message
                                                             })

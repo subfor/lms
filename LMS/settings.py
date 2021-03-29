@@ -60,7 +60,9 @@ ROOT_URLCONF = 'LMS.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -126,9 +128,18 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static_in_env")
 STATIC_URL = '/static/'
 CELERY_BROKER_URL = 'amqp://localhost'
 
-
 CELERY_ENABLE_UTC = True
 CELERY_TIMEZONE = 'Europe/Kiev'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211'
+    }
+}
+
+LOGIN_REDIRECT_URL = '/'
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'

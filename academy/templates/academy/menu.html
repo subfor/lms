@@ -3,9 +3,11 @@
       <a class="py-2 d-none d-md-inline-block" href="/students">Students</a>
       <a class="py-2 d-none d-md-inline-block" href="/lecturers">Lecturers</a>
       <a class="py-2 d-none d-md-inline-block" href="/groups">Groups</a>
-      <a class="py-2 d-none d-md-inline-block" href="/addstudent">Add Student</a>
-      <a class="py-2 d-none d-md-inline-block" href="/addlecturer">Add Lecturer</a>
-      <a class="py-2 d-none d-md-inline-block" href="/addgroup">Add Group</a>
+        {% if user.is_admin %}
+          <a class="py-2 d-none d-md-inline-block" href="/addstudent">Add Student</a>
+          <a class="py-2 d-none d-md-inline-block" href="/addlecturer">Add Lecturer</a>
+          <a class="py-2 d-none d-md-inline-block" href="/addgroup">Add Group</a>
+        {% endif %}
       <a class="py-2 d-none d-md-inline-block" href="/contact">Contact us</a>
     </nav>
   </header>
