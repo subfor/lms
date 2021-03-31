@@ -40,3 +40,8 @@ class StudentListViewTest(TestCase):
     def test_view_students_url_accessible_by_name(self):
         resp = self.client.get(reverse('students'))
         self.assertEqual(resp.status_code, 200)
+
+    def test_lists_all_students(self):
+        resp = self.client.get(reverse('students'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(len(resp.context['students']) == 100)
