@@ -8,7 +8,7 @@
 
             </div>
             <div class="col">
-                {% if user.is_admin %}
+                {% if user.is_staff %}
                 <a href="lecturers/add">
                 <button class="btn btn-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="green" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
@@ -33,7 +33,7 @@
                 <th scope="col">First name</th>
                 <th scope="col">Last name</th>
                 <th scope="col">Email</th>
-                {% if user.is_admin %}
+                {% if user.is_staff %}
                 <th scope="col">Action</th>
                 {% endif %}
             </tr>
@@ -70,7 +70,7 @@
                     <td>{{ lecturer.last_name}}</td>
                     <td>{{ lecturer.email }}</td>
                     <td>
-                        {% if user.is_admin %}
+                        {% if user.is_staff %}
                         <a href="lecturers/delete/{{ lecturer.teacher_id }}">
                         <button type="button" class="btn btn-danger">Delete</button>
                         </a>
