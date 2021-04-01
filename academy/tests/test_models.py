@@ -1,13 +1,15 @@
 from academy.models import Group, Lecturer, Student
 
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.test import TestCase
+
+import pytest
 
 
 class StudentModelTest(TestCase):
 
     @classmethod
+    @pytest.mark.django_db
     def setUpTestData(cls):
         cls.first_name = "Jhon"
         cls.last_name = "Doe"
@@ -32,6 +34,7 @@ class StudentModelTest(TestCase):
     def tearDown(self) -> None:
         pass
 
+    @pytest.mark.django_db
     def test_successfully_student_creation(self):
         student = Student(first_name=self.first_name,
                           last_name=self.last_name,
@@ -40,6 +43,7 @@ class StudentModelTest(TestCase):
                           )
         student.full_clean()
 
+    @pytest.mark.django_db
     def test_failure_due_to_student_long_first_name(self):
         long_first_name = 'a' * 31
         student = Student(first_name=long_first_name,
@@ -51,6 +55,7 @@ class StudentModelTest(TestCase):
         with self.assertRaisesMessage(ValidationError, expected_message):
             student.full_clean()
 
+    @pytest.mark.django_db
     def test_failure_due_to_student_long_last_name(self):
         long_last_name = 'a' * 31
         student = Student(first_name=self.first_name,
@@ -62,6 +67,7 @@ class StudentModelTest(TestCase):
         with self.assertRaisesMessage(ValidationError, expected_message):
             student.full_clean()
 
+    @pytest.mark.django_db
     def test_failure_due_to_student_long_valid_email(self):
         long_email = f"{'a' * 42}@mail.com"
         email = Student(first_name=self.first_name,
@@ -73,6 +79,7 @@ class StudentModelTest(TestCase):
         with self.assertRaisesMessage(ValidationError, expected_message):
             email.full_clean()
 
+    @pytest.mark.django_db
     def test_failure_due_to_student_long_not_valid_email(self):
         long_email = 'a' * 51
         email = Student(first_name=self.first_name,
@@ -84,6 +91,7 @@ class StudentModelTest(TestCase):
         with self.assertRaisesMessage(ValidationError, expected_messages):
             email.full_clean()
 
+    @pytest.mark.django_db
     def test_successfully_lecturer_creation(self):
         student = Lecturer(first_name=self.first_name,
                            last_name=self.last_name,
@@ -92,6 +100,7 @@ class StudentModelTest(TestCase):
                            )
         student.full_clean()
 
+    @pytest.mark.django_db
     def test_failure_due_to_lecturer_long_first_name(self):
         long_first_name = 'a' * 31
         lecturer = Lecturer(first_name=long_first_name,
@@ -103,6 +112,7 @@ class StudentModelTest(TestCase):
         with self.assertRaisesMessage(ValidationError, expected_message):
             lecturer.full_clean()
 
+    @pytest.mark.django_db
     def test_failure_due_to_lecturer_long_last_name(self):
         long_last_name = 'a' * 31
         lecturer = Lecturer(first_name=self.first_name,
@@ -114,6 +124,7 @@ class StudentModelTest(TestCase):
         with self.assertRaisesMessage(ValidationError, expected_message):
             lecturer.full_clean()
 
+    @pytest.mark.django_db
     def test_failure_due_to_lecturer_long_valid_email(self):
         long_email = f"{'a' * 42}@mail.com"
         email = Lecturer(first_name=self.first_name,
@@ -125,6 +136,7 @@ class StudentModelTest(TestCase):
         with self.assertRaisesMessage(ValidationError, expected_message):
             email.full_clean()
 
+    @pytest.mark.django_db
     def test_failure_due_to_lecturer_long_not_valid_email(self):
         long_email = 'a' * 51
         email = Lecturer(first_name=self.first_name,
@@ -136,6 +148,7 @@ class StudentModelTest(TestCase):
         with self.assertRaisesMessage(ValidationError, expected_messages):
             email.full_clean()
 
+    @pytest.mark.django_db
     def test_successfully_group_creation(self):
         group = Group.objects.create(course="Python",
                                      group_name="test_group"
@@ -145,6 +158,7 @@ class StudentModelTest(TestCase):
         # validiruet ne sozdanie obekti
         # group.full_clean()
 
+    @pytest.mark.django_db
     def test_failure_due_to_group_long_course_field(self):
         long_course = 'a' * 31
         group = Group.objects.create(course=long_course,
@@ -155,6 +169,7 @@ class StudentModelTest(TestCase):
         with self.assertRaisesMessage(ValidationError, expected_message):
             group.full_clean()
 
+    @pytest.mark.django_db
     def test_failure_due_to_group_long_group_name(self):
         long_group_name = 'a' * 21
         group = Group.objects.create(course="Python",
