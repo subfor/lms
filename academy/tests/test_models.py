@@ -1,5 +1,6 @@
-from django.core.exceptions import ValidationError
 from academy.models import Group, Lecturer, Student
+
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 
