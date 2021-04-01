@@ -6,9 +6,10 @@ install:
   - pip install -r requirements.txt
 #env:
 #  - export DJANGO_SETTINGS_MODULE="LMS.settings"
-virtualenv:
-  system_site_packages: true
+#virtualenv:
+#  system_site_packages: true
 # command to run tests
 script:
+  - python manage.py test
   - pytest --flake8
 
