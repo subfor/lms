@@ -8,7 +8,7 @@
 
             </div>
             <div class="col">
-                {% if user.is_admin %}
+                {% if user.is_staff %}
                 <a href="groups/add/">
                 <button class="btn btn-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="green" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
@@ -53,7 +53,7 @@
                                     {% for student in group.students.all %}
                                         <p>{{ student.first_name }} {{ student.last_name }} {{ student.email }}</p>
                                     {% endfor %}
-                                    {% if user.is_admin %}
+                                    {% if user.is_staff %}
                                         <a href="groups/delete/{{ group.group }}">
                                         <button type="button" class="btn btn-danger">Delete</button>
                                         </a>
