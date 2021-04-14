@@ -12,8 +12,10 @@ click-plugins==1.1.1
 click-repl==0.1.6
 Django==3.1.6
 django-bulk-update-or-create==0.2.0
+django-factory-boy==1.0.0
 django-sendgrid-webhook==0.3.0
 django-silk==4.1.0
+factory-boy==3.2.0
 Faker==6.0.0
 flake8==3.8.4
 flake8-builtins==1.5.3
@@ -37,6 +39,7 @@ Pygments==2.8.0
 pyparsing==2.4.7
 pyt==1.0.5
 pytest==6.2.2
+pytest-django==4.1.0
 pytest-flake8==1.0.7
 python-dateutil==2.8.1
 python-http-client==3.3.2
