@@ -5,8 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-    atomic = False
-
     initial = True
 
     dependencies = [
@@ -38,7 +36,8 @@ class Migration(migrations.Migration):
                 ('course', models.CharField(max_length=30)),
                 ('group_name', models.CharField(max_length=20, unique=True, verbose_name='Group')),
                 ('students', models.ManyToManyField(to='academy.Student')),
-                ('teacher', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='academy.lecturer')),
+                ('teacher', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                                 to='academy.lecturer')),
             ],
         ),
     ]
