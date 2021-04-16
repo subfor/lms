@@ -1,2 +1,2 @@
 web: gunicorn LMS.wsgi --log-file -
-worker: celery -A -A LMS.celery worker -l info -E -B
+worker: celery  -A LMS.celery worker -l info -E -B
