@@ -133,7 +133,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 #         os.path.join(BASE_DIR, 'static'),
 #         ]
 STATIC_URL = '/static/'
-CELERY_BROKER_URL = 'amqp://localhost'
+
+CELERY_BROKER_URL = 'amqps://dmgaqnxr:4EBetaKxjwddVpnm-61psQFWW-GL3J7z@crow.rmq.cloudamqp.com/dmgaqnxr'
+# CELERY_BROKER_URL = 'amqp://localhost'
 
 CELERY_ENABLE_UTC = True
 CELERY_TIMEZONE = 'Europe/Kiev'
@@ -150,3 +152,5 @@ CACHES = {
 
 LOGIN_REDIRECT_URL = '/'
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+BROKER_POOL_LIMIT = 3
