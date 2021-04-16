@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'logger',
     'silk',
     'exchanger',
-    'bulk_update_or_create'
+    'bulk_update_or_create',
+    'users'
 ]
 
 MIDDLEWARE = [

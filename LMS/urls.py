@@ -20,12 +20,12 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
-
 urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
     path('', include('academy.urls')),
-    url(r'^silk/', include('silk.urls', namespace='silk'))
+    url(r'^silk/', include('silk.urls', namespace='silk')),
+    path('users/', include('users.urls'))
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -6,7 +6,7 @@ from .models import Group, Lecturer, Student
 class AddStudentForm(forms.ModelForm):
     class Meta:
         model = Student
-        fields = ('first_name', 'last_name', 'email')
+        fields = ('first_name', 'last_name', 'email', 'photo')
 
 
 class AddLecturerForm(forms.ModelForm):
