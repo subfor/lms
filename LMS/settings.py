@@ -26,7 +26,10 @@ SECRET_KEY = 'sg^%7!c43@n@x)a$cbkjt*i)r147bsnb4nn^1_j^q#rms1zq4d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+# heroku
+# ALLOWED_HOSTS = ['*']
+
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -43,8 +46,32 @@ INSTALLED_APPS = [
     'silk',
     'exchanger',
     'bulk_update_or_create',
-    'users'
+    'users',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'django.contrib.sites'
 ]
+
+SITE_ID = 3
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend'
+]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email'
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online'
+        }
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -134,14 +161,17 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 #         ]
 STATIC_URL = '/static/'
 
-CELERY_BROKER_URL = 'amqps://dmgaqnxr:4EBetaKxjwddVpnm-61psQFWW-GL3J7z@crow.rmq.cloudamqp.com/dmgaqnxr'
-# CELERY_BROKER_URL = 'amqp://localhost'
+# heroku
+# CELERY_BROKER_URL = 'amqps://dmgaqnxr:4EBetaKxjwddVpnm-61psQFWW-GL3J7z@crow.rmq.cloudamqp.com/dmgaqnxr'
+CELERY_BROKER_URL = 'amqp://localhost'
 
 CELERY_ENABLE_UTC = True
 CELERY_TIMEZONE = 'Europe/Kiev'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+# MEDIA_ROOT = 'cloudinary://435837169361291:ChR7QH87wLq963Q0EPhlrZUuP6c@hiykuuftv/'
+# MEDIA_URL = 'cloudinary://435837169361291:ChR7QH87wLq963Q0EPhlrZUuP6c@hiykuuftv/'
 
 CACHES = {
     'default': {
@@ -151,6 +181,9 @@ CACHES = {
 }
 
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
-BROKER_POOL_LIMIT = 3
+# heroku
+# BROKER_POOL_LIMIT = 3
