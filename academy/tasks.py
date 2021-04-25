@@ -24,3 +24,14 @@ def send_mail(data):
         html_content=content)
     sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
     sg.send(message)
+
+
+@shared_task
+def send_activation_mail(data):
+    message = Mail(
+        from_email=os.environ.get('EMAIL_SENDER'),
+        to_emails=data['to_email'],
+        subject=data['subject'],
+        html_content=data['message'])
+    sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+    sg.send(message)

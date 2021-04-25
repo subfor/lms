@@ -13,6 +13,8 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+import dj_database_url
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
@@ -23,6 +25,9 @@ SECRET_KEY = 'sg^%7!c43@n@x)a$cbkjt*i)r147bsnb4nn^1_j^q#rms1zq4d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+# heroku
+# ALLOWED_HOSTS = ['*']
 
 ALLOWED_HOSTS = []
 
@@ -40,8 +45,33 @@ INSTALLED_APPS = [
     'logger',
     'silk',
     'exchanger',
-    'bulk_update_or_create'
+    'bulk_update_or_create',
+    'users',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'django.contrib.sites'
 ]
+
+SITE_ID = 3
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend'
+]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email'
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online'
+        }
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -87,6 +117,9 @@ DATABASES = {
     }
 }
 
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)
+
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -121,11 +154,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static_in_env")
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, "static_in_env")
 # STATICFILES_DIRS = [
 #         os.path.join(BASE_DIR, 'static'),
 #         ]
 STATIC_URL = '/static/'
+
+# heroku
+# CELERY_BROKER_URL = 'amqps://dmgaqnxr:4EBetaKxjwddVpnm-61psQFWW-GL3J7z@crow.rmq.cloudamqp.com/dmgaqnxr'
 CELERY_BROKER_URL = 'amqp://localhost'
 
 CELERY_ENABLE_UTC = True
@@ -133,6 +170,8 @@ CELERY_TIMEZONE = 'Europe/Kiev'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+# MEDIA_ROOT = 'cloudinary://435837169361291:ChR7QH87wLq963Q0EPhlrZUuP6c@hiykuuftv/'
+# MEDIA_URL = 'cloudinary://435837169361291:ChR7QH87wLq963Q0EPhlrZUuP6c@hiykuuftv/'
 
 CACHES = {
     'default': {
@@ -142,4 +181,9 @@ CACHES = {
 }
 
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+# heroku
+# BROKER_POOL_LIMIT = 3

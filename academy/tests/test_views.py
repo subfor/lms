@@ -1,3 +1,5 @@
+import django
+django.setup()
 from academy.models import Group, Lecturer, Student
 
 from django.conf import settings
