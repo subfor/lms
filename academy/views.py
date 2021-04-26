@@ -219,8 +219,8 @@ class StudentsAddView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
     success_message = "Student successfully added"
     success_url = reverse_lazy('add_student_new')
 
-    # def test_func(self):
-    #     return self.request.user.is_staff
+    def test_func(self):
+        return self.request.user.is_staff
 
     # def get_success_url(self):
     #     return redirect(self.request.path)
