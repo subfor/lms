@@ -1,0 +1,35 @@
+{% extends './base.html' %}
+
+{% block content %}
+    <h1 class="mb-5 mt-5" >Add/Edit</h1>
+                <div class="container">
+                <div class="row">
+                    <div class="col-10">
+                        {% if request.path != '/addstudent/new' %}
+                         <a href="/students/new">back</a>
+                        {% endif %}
+                    </div>
+                    <div class="col">
+
+                    </div>
+                    <div class="col">
+
+                    </div>
+                </div>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" class="row justify-content-center">
+                <div class="col-2">
+                {{ form.as_p }}
+                {% csrf_token %}
+                <p><input type='submit' value='Save' class="btn btn-primary"></p>
+                </div>
+            </form>
+            {% if messages %}
+                 {% for message in messages %}
+                     <div class="text-center alert alert-{{ message.tags }}">
+                         {{ message|safe }}
+                     </div>
+                 {% endfor %}
+             {% endif %}
+{% endblock %}

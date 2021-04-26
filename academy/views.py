@@ -1,5 +1,10 @@
 from datetime import timedelta
 
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, ListView, FormView, UpdateView
+
 from academy.forms import AddGroupForm, AddLecturerForm, AddStudentForm, ContactForm
 from academy.models import Group, Lecturer, Student
 from academy.tasks import send_mail
@@ -196,3 +201,33 @@ def send_contact(request):
     else:
         contact_form = ContactForm()
     return render(request, 'academy/contact.html', {'contact_form': contact_form})
+
+
+class StudentsCreateView(ListView):
+    model = Student
+    ordering = ['-student']
+    template_name = 'academy/students_new.html'
+    fields = ['student', 'photo', 'first_name', 'last_name', 'email']
+
+
+class StudentsAddView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, CreateView):
+    # login_url = '/accounts/login/'
+    # redirect_field_name = '/addstudent/new/'
+    model = Student
+    template_name = 'academy/add_student_new.html'
+    fields = ['first_name', 'last_name', 'email', 'photo']
+    success_message = "Student successfully added"
+    success_url = reverse_lazy('add_student_new')
+
+    # def test_func(self):
+    #     return self.request.user.is_staff
+
+    # def get_success_url(self):
+    #     return redirect(self.request.path)
+
+
+class StudentsEditView(SuccessMessageMixin, UpdateView):
+    model = Student
+    template_name = 'academy/add_student_new.html'
+    fields = ['first_name', 'last_name', 'email', 'photo']
+    success_message = "Student successfully edit"

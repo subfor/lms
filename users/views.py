@@ -1,3 +1,5 @@
+from django.urls import reverse_lazy
+
 from academy.tasks import send_activation_mail
 
 from django.contrib.auth import login
@@ -34,6 +36,7 @@ def signup(request):
                 'user_id': user_id,
                 'token': token
             })
+            # print(form.cleaned_data)
             data = {
                 'to_email': form.cleaned_data['email'],
                 'subject': subject,
@@ -58,7 +61,7 @@ def activate(request, user_id, token):
         user.is_active = True
         user.profile.email_confirmed = True
         user.save()
-        login(request, user)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         return redirect('/')
 
     return render(request, 'users/account_activation_invalid.html')
