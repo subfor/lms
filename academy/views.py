@@ -3,7 +3,7 @@ from datetime import timedelta
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, ListView, FormView, UpdateView
+from django.views.generic import CreateView, ListView, FormView, UpdateView, DeleteView
 
 from academy.forms import AddGroupForm, AddLecturerForm, AddStudentForm, ContactForm
 from academy.models import Group, Lecturer, Student
@@ -203,6 +203,12 @@ def send_contact(request):
     return render(request, 'academy/contact.html', {'contact_form': contact_form})
 
 
+# class AdminStaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+#
+#     def test_func(self):
+#         return self.request.user.is_superuser or self.request.user.is_staff
+
+
 class StudentsCreateView(ListView):
     model = Student
     ordering = ['-student']
@@ -211,8 +217,6 @@ class StudentsCreateView(ListView):
 
 
 class StudentsAddView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, CreateView):
-    # login_url = '/accounts/login/'
-    # redirect_field_name = '/addstudent/new/'
     model = Student
     template_name = 'academy/add_student_new.html'
     fields = ['first_name', 'last_name', 'email', 'photo']
@@ -220,14 +224,70 @@ class StudentsAddView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
     success_url = reverse_lazy('add_student_new')
 
     def test_func(self):
-        return self.request.user.is_staff
-
-    # def get_success_url(self):
-    #     return redirect(self.request.path)
+        return self.request.user.is_superuser or self.request.user.is_staff
 
 
-class StudentsEditView(SuccessMessageMixin, UpdateView):
+class StudentsEditView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
     model = Student
     template_name = 'academy/add_student_new.html'
     fields = ['first_name', 'last_name', 'email', 'photo']
     success_message = "Student successfully edit"
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.is_staff
+
+    def get_success_url(self, **kwargs):
+        return reverse("edit_student_new", kwargs={'pk': self.object.pk})
+
+
+class StudentsDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Student
+    success_url = reverse_lazy('students_new')
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.is_staff
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+
+class LecturersCreateView(ListView):
+    model = Lecturer
+    ordering = ['-teacher_id']
+    template_name = 'academy/lecturers_new.html'
+    fields = ['teacher_id', 'photo', 'first_name', 'last_name', 'email']
+
+
+class LecturersAddView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, CreateView):
+    model = Lecturer
+    template_name = 'academy/add_lecturer_new.html'
+    fields = ['first_name', 'last_name', 'email', 'photo']
+    success_message = "Lecturer successfully added"
+    success_url = reverse_lazy('add_lecturer_new')
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.is_staff
+
+
+class LecturersEditView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
+    model = Lecturer
+    template_name = 'academy/add_lecturer_new.html'
+    fields = ['first_name', 'last_name', 'email', 'photo']
+    success_message = "Lecturer successfully edit"
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.is_staff
+
+    def get_success_url(self, **kwargs):
+        return reverse("edit_lecturer_new", kwargs={'pk': self.object.pk})
+
+
+class LecturersDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Lecturer
+    success_url = reverse_lazy('lecturers_new')
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.is_staff
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)

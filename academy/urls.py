@@ -1,7 +1,8 @@
 from django.urls import path
 
 from . import views
-from .views import StudentsCreateView, StudentsAddView, StudentsEditView
+from .views import StudentsCreateView, StudentsAddView, StudentsEditView, StudentsDeleteView, LecturersCreateView, \
+    LecturersAddView, LecturersDeleteView, LecturersEditView
 
 urlpatterns = [
     path('', views.get_index, name='index'),
@@ -9,7 +10,12 @@ urlpatterns = [
     path('students/new/', StudentsCreateView.as_view(), name='students_new'),
     path('addstudent/new/', StudentsAddView.as_view(), name='add_student_new'),
     path('editstudent/new/<int:pk>/', StudentsEditView.as_view(), name='edit_student_new'),
+    path('deletestudent/new/<int:pk>/', StudentsDeleteView.as_view(), name='delete_student_new'),
     path('lecturers', views.get_lecturers, name='lecturers'),
+    path('lecturers/new/', LecturersCreateView.as_view(), name='lecturers_new'),
+    path('addlecturer/new/', LecturersAddView.as_view(), name='add_lecturer_new'),
+    path('editlecturer/new/<int:pk>/', LecturersEditView.as_view(), name='edit_lecturer_new'),
+    path('deletelecturer/new/<int:pk>/', LecturersDeleteView.as_view(), name='delete_lecturer_new'),
     path('groups', views.get_groups, name='groups'),
     path('addstudent', views.add_student),
     path('addgroup', views.add_group),
