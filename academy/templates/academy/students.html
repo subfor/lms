@@ -84,4 +84,9 @@
             </tbody>
         </table>
     </div>
+<br>
+{% if articles.paginator.num_pages != 1 %}
+    {% include "academy/pagination.html" with page=students  %}
+{% endif %}
+
 {% endblock %}

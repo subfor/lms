@@ -1,5 +1,4 @@
-import django
-django.setup()
+
 from academy.models import Group, Lecturer, Student
 
 from django.core.exceptions import ValidationError

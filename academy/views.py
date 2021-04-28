@@ -2,9 +2,11 @@ from datetime import timedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, FormView, UpdateView, DeleteView
 
+from LMS.settings import STUDENTS_PER_PAGE, LECTURERS_PER_PAGE, GROUPS_PER_PAGE
 from academy.forms import AddGroupForm, AddLecturerForm, AddStudentForm, ContactForm
 from academy.models import Group, Lecturer, Student
 from academy.tasks import send_mail
@@ -25,17 +27,41 @@ def get_index(request):
 
 def get_students(request):
     students = Student.objects.all().order_by('-student')
-    return render(request, 'academy/students.html', {'students': students})
+    paginator = Paginator(students, STUDENTS_PER_PAGE)
+    page = request.GET.get('page')
+    try:
+        students = paginator.page(page)
+    except PageNotAnInteger:
+        students = paginator.page(1)
+    except EmptyPage:
+        students = paginator.page(paginator.num_pages)
+    return render(request, 'academy/students.html', {'students': students, 'page': page})
 
 
 def get_lecturers(request):
     lecturers = Lecturer.objects.all().order_by('-teacher_id')
-    return render(request, 'academy/lecturers.html', {'lecturers': lecturers})
+    paginator = Paginator(lecturers, LECTURERS_PER_PAGE)
+    page = request.GET.get('page')
+    try:
+        lecturers = paginator.page(page)
+    except PageNotAnInteger:
+        lecturers = paginator.page(1)
+    except EmptyPage:
+        lecturers = paginator.page(paginator.num_pages)
+    return render(request, 'academy/lecturers.html', {'lecturers': lecturers, 'page': page})
 
 
 def get_groups(request):
     groups = Group.objects.all().order_by('-group')
-    return render(request, 'academy/groups.html', {'groups': groups})
+    paginator = Paginator(groups, GROUPS_PER_PAGE)
+    page = request.GET.get('page')
+    try:
+        groups = paginator.page(page)
+    except PageNotAnInteger:
+        groups = paginator.page(1)
+    except EmptyPage:
+        groups = paginator.page(paginator.num_pages)
+    return render(request, 'academy/groups.html', {'groups': groups, 'page': page})
 
 
 @user_passes_test(lambda user: user.is_staff)

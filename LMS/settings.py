@@ -187,3 +187,6 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 # heroku
 # BROKER_POOL_LIMIT = 3
+STUDENTS_PER_PAGE = 10
+LECTURERS_PER_PAGE = 10
+GROUPS_PER_PAGE = 5

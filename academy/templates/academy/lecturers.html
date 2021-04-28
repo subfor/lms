@@ -24,7 +24,7 @@
             </div>
         </div>
     </div>
-    <div class="container">
+
     <div class="container">
         <table class="table">
             <thead>
@@ -42,9 +42,6 @@
             {% for lecturer in lecturers %}
                 <tr>
                     <td>
-<!--                        <div class="text-center">-->
-<!--                          <img src="{{ lecturer.photo.url }}" class="rounded" alt="Photo" width="40" height="40">-->
-<!--                        </div>-->
                         <button type="button" class="btn btn-link shadow-none" data-toggle="modal" data-target="#staticBackdrop{{ lecturer.teacher_id }}" >
                           <img src="{{ lecturer.photo.url }}" class="rounded" alt="Photo" width="40" height="40">
                         </button>
@@ -84,4 +81,7 @@
             </tbody>
         </table>
     </div>
+{% if articles.paginator.num_pages != 1 %}
+    {% include "academy/pagination.html" with page=lecturers  %}
+{% endif %}
 {% endblock %}
