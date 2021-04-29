@@ -3,12 +3,19 @@ from datetime import timedelta
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, FormView, UpdateView, DeleteView
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_200_OK
 
 from LMS.settings import STUDENTS_PER_PAGE, LECTURERS_PER_PAGE, GROUPS_PER_PAGE
 from academy.forms import AddGroupForm, AddLecturerForm, AddStudentForm, ContactForm
 from academy.models import Group, Lecturer, Student
+from academy.serializers import StudentSerializer, GroupSerializer
 from academy.tasks import send_mail
 
 from django.contrib.auth.decorators import user_passes_test
@@ -94,7 +101,7 @@ def del_student(request, student_id: int):
 
 
 @user_passes_test(lambda user: user.is_staff)
-@cache_page(60 * 5)
+# @cache_page(60 * 5)
 def edit_student(request, student_id: int):
     action_name = "Edit student"
     student = get_object_or_404(Student, student=student_id)
@@ -140,7 +147,7 @@ def del_lecturer(request, lecturer_id: int):
 
 
 @user_passes_test(lambda user: user.is_staff)
-@cache_page(60 * 5)
+# @cache_page(60 * 5)
 def edit_lecturer(request, lecturer_id: int):
     action_name = "Edit lecturer"
     lecturer = get_object_or_404(Lecturer, teacher_id=lecturer_id)
@@ -186,7 +193,7 @@ def del_group(request, group_id: int):
 
 
 @user_passes_test(lambda user: user.is_staff)
-@cache_page(60 * 5)
+# @cache_page(60 * 5)
 def edit_group(request, group_id: int):
     action_name = "Edit group"
     group = get_object_or_404(Group, group=group_id)
@@ -317,3 +324,131 @@ class LecturersDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
+
+
+@api_view(['GET', 'POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def students(request):
+    if request.method == 'GET':
+        students = Student.objects.all()
+        serializer = StudentSerializer(students, many=True)
+        return Response(serializer.data)
+
+    if request.method == 'POST':
+        rdata = request.data
+        data = {
+            'first_name': rdata.get('first_name'),
+            'last_name': rdata.get('last_name'),
+            'email': rdata.get('email'),
+        }
+        serializer = StudentSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=HTTP_201_CREATED)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'DELETE', 'PUT'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def student(request, student_id):
+    try:
+        student = Student.objects.get(pk=student_id)
+    except Student.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = StudentSerializer(student)
+        return Response(serializer.data)
+
+    if request.method == 'DELETE':
+        student.delete()
+        return Response(status=HTTP_204_NO_CONTENT)
+
+    if request.method == 'PUT':
+        first_name = request.data.get('first_name')
+        if first_name:
+            student.first_name = first_name
+        last_name = request.data.get('last_name')
+        if last_name:
+            student.last_name = last_name
+        email = request.data.get('email')
+        if email:
+            student.email = email
+        student.save()
+        return Response(status=HTTP_200_OK)
+
+
+"""
+asd
+"""
+
+
+# ields = ('group', 'course', 'students', 'teachers', 'group_name')
+
+@api_view(['GET', 'POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def groups(request):
+    if request.method == 'GET':
+        groups = Group.objects.all()
+        serializer = GroupSerializer(groups, many=True)
+        return Response(serializer.data)
+
+    if request.method == 'POST':
+        rdata = request.data
+        data = {
+            'course': rdata.get('course'),
+            'group_name': rdata.get('group_name'),
+            'students': rdata.get('students'),
+            'teachers': rdata.get('teachers'),
+        }
+        serializer = GroupSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=HTTP_201_CREATED)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'DELETE', 'PUT'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def group(request, group_id):
+    try:
+        group = Group.objects.get(pk=group_id)
+    except Group.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = GroupSerializer(group)
+        return Response(serializer.data)
+
+    if request.method == 'DELETE':
+        group.delete()
+        return Response(status=HTTP_204_NO_CONTENT)
+
+    if request.method == 'PUT':
+        course = request.data.get('course')
+        if course:
+            group.course = course
+
+        group_name = request.data.get('group_name')
+        if group_name:
+            group.group_name = group_name
+
+        students = request.data.get('students')
+        if students:
+            for existing_student in group.students.all():
+                group.students.remove(existing_student)
+            for student in students:
+                group.students.add(student)
+
+        teachers = request.data.get('teachers')
+        if teachers:
+            for existing_teachers in group.teachers.all():
+                group.teachers.remove(existing_teachers)
+            for teacher in teachers:
+                group.teachers.add(teacher)
+        group.save()
+        return Response(status=HTTP_200_OK)

@@ -1,6 +1,6 @@
 [flake8]
 # some comment
-ignore = F401, W292, I100, I101, I201
+ignore = F401, W292, I100, I101, I201, C901
 max-complexity = 10
 max_line_length = 119
 exclude = tests, setup.py, __init__.py, */migrations/*, addgroups.py, 0003_logrecord_access_time.py, 0001_initial.py, test_models.py, test_views.py
