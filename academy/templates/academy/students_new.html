@@ -9,7 +9,7 @@
             </div>
             <div class="col">
                 {% if user.is_staff %}
-                <a href="students/add">
+                <a href="/addstudent/new/">
                 <button class="btn btn-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="green" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
                     <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
@@ -38,13 +38,10 @@
             </tr>
             </thead>
             <tbody>
-            {% for student in students %}
+            {% for student in object_list %}
                 <a>
                     <td>
-<!--                        <div class="text-center">-->
-<!--                          <img src="{{ student.photo.url }}" class="rounded" alt="Photo" width="40" height="40">-->
-<!--                        </div>-->
-<!-- Button trigger modal -->
+
                         <button type="button" class="btn btn-link shadow-none" data-toggle="modal" data-target="#staticBackdrop{{ student.student }}" >
                           <img src="{{ student.photo.url }}" class="rounded" alt="Photo" width="40" height="40">
                         </button>
@@ -71,10 +68,10 @@
                     <td>{{ student.email }}</td>
                     <td>
                         {% if user.is_staff %}
-                        <a href="students/delete/{{ student.student }}">
+                        <a href="/deletestudent/new/{{ student.pk }}/">
                         <button type="button" class="btn btn-danger">Delete</button>
                         </a>
-                        <a href="students/edit/{{ student.student }}">
+                        <a href="/editstudent/new/{{ student.pk }}/">
                         <button type="button" class="btn btn-success">Edit</button>
                         </a>
                         {% endif %}
@@ -84,9 +81,4 @@
             </tbody>
         </table>
     </div>
-<br>
-{% if articles.paginator.num_pages != 1 %}
-    {% include "academy/pagination.html" with page=students  %}
-{% endif %}
-
 {% endblock %}

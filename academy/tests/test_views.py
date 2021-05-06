@@ -1,8 +1,6 @@
-import django
-django.setup()
+
 from academy.models import Group, Lecturer, Student
 
-from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
 
@@ -81,7 +79,7 @@ class LecturerListViewTest(TestCase):
 
 class GroupListViewTest(TestCase):
     NUMBER_OF_STUDENT = 10
-    NUMBER_OF_GROUP = 10
+    NUMBER_OF_GROUP = 5
 
     @classmethod
     def setUpTestData(cls):
@@ -119,6 +117,7 @@ class GroupListViewTest(TestCase):
     def test_lists_all_groups(self):
         resp = self.client.get(reverse('groups'))
         self.assertEqual(resp.status_code, 200)
+        print(len(resp.context['groups']))
         self.assertTrue(len(resp.context['groups']) == self.NUMBER_OF_GROUP)
 
     def test_view_uses_correct_template(self):

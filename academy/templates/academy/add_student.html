@@ -23,7 +23,7 @@
                 {{ add_student_form.as_p }}
                 {% csrf_token %}
                 <p><input type='submit' value='{{ action_name }}' class="btn btn-primary"></p>
-                    {{ message }}
+                   <p id="success_message">{{ message }}</p>
                 </div>
             </form>
 {% endblock %}
