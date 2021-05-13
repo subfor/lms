@@ -1,6 +1,8 @@
+import jwt
 from datetime import timedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse
@@ -8,11 +10,14 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, FormView, UpdateView, DeleteView
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_200_OK
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_200_OK, \
+    HTTP_404_NOT_FOUND, HTTP_403_FORBIDDEN
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework_jwt.serializers import jwt_payload_handler
 
-from LMS.settings import STUDENTS_PER_PAGE, LECTURERS_PER_PAGE, GROUPS_PER_PAGE
+from LMS.settings import STUDENTS_PER_PAGE, LECTURERS_PER_PAGE, GROUPS_PER_PAGE, SECRET_KEY
 from academy.forms import AddGroupForm, AddLecturerForm, AddStudentForm, ContactForm
 from academy.models import Group, Lecturer, Student
 from academy.serializers import StudentSerializer, GroupSerializer
@@ -327,7 +332,7 @@ class LecturersDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 
 @api_view(['GET', 'POST'])
-@authentication_classes([SessionAuthentication, BasicAuthentication])
+@authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
 def students(request):
     if request.method == 'GET':
@@ -350,7 +355,7 @@ def students(request):
 
 
 @api_view(['GET', 'DELETE', 'PUT'])
-@authentication_classes([SessionAuthentication, BasicAuthentication])
+@authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
 def student(request, student_id):
     try:
@@ -379,13 +384,6 @@ def student(request, student_id):
         student.save()
         return Response(status=HTTP_200_OK)
 
-
-"""
-asd
-"""
-
-
-# ields = ('group', 'course', 'students', 'teachers', 'group_name')
 
 @api_view(['GET', 'POST'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
@@ -452,3 +450,35 @@ def group(request, group_id):
                 group.teachers.add(teacher)
         group.save()
         return Response(status=HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def authenticate_user(request):
+    email = request.data.get('email')
+    password = request.data.get('password')
+    if not email or not password:
+        res = {'error': 'Please provide an email and a password'}
+        return Response(res)
+
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        message = "Can't find user with the specified email"
+        res = {'error': message}
+        return Response(res, status=HTTP_404_NOT_FOUND)
+
+    if not user.check_password(password):
+        message = "Can't authenticate with the given credentials or the account has " \
+                  "been deactivated"
+        res = {'error': message}
+        return Response(res, status=HTTP_403_FORBIDDEN)
+
+    payload = jwt_payload_handler(user)
+    token = jwt.encode(payload, SECRET_KEY)
+    user_details = {
+        'user_id': user.pk,
+        'name': f'{user.first_name} {user.last_name}',
+        'token': token
+    }
+    return Response(user_details, status=HTTP_200_OK)
